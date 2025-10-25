@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartAcad - Real-Time Academic Access</title>
+  <style>
+    :root {
+      /* Primitive Color Tokens */
+      --color-white: rgba(255, 255, 255, 1);
+      --color-black: rgba(0, 0, 0, 1);
+      --color-cream-50: rgba(252, 252, 249, 1);
+      --color-cream-100: rgba(255, 255, 253, 1);
+      --color-gray-200: rgba(245, 245, 245, 1);
+      --color-gray-300: rgba(167, 169, 169, 1);
+      --color-gray-400: rgba(119, 124, 124, 1);
+      --color-slate-500: rgba(98, 108, 113, 1);
+      --color-brown-600: rgba(94, 82, 64, 1);
+      --color-charcoal-700: rgba(31, 33, 33, 1);
+      --color-charcoal-800: rgba(38, 40, 40, 1);
+      --color-slate-900: rgba(19, 52, 59, 1);
+      --color-teal-300: rgba(50, 184, 198, 1);
+      --color-teal-400: rgba(45, 166, 178, 1);
+      --color-teal-500: rgba(33, 128, 141, 1);
+      --color-teal-600: rgba(29, 116, 128, 1);
+      --color-teal-700: rgba(26, 104, 115, 1);
+      --color-green-500: rgba(76, 175, 80, 1);
+      --color-green-600: rgba(67, 160, 71, 1);
+      --color-green-700: rgba(56, 142, 60, 1);
+      
+      /* RGB versions for opacity control */
+      --color-brown-600-rgb: 94, 82, 64;
+      --color-teal-500-rgb: 33, 128, 141;
+      --color-slate-900-rgb: 19, 52, 59;
+      --color-slate-500-rgb: 98, 108, 113;
+      --color-green-500-rgb: 76, 175, 80;
+      --color-gray-400-rgb: 119, 124, 124;
+      --color-teal-300-rgb: 50, 184, 198;
+      --color-gray-300-rgb: 167, 169, 169;
+      --color-gray-200-rgb: 245, 245, 245;
+      
+      /* Semantic Color Tokens (Light Mode) */
+      --color-background: var(--color-cream-50);
+      --color-surface: var(--color-cream-100);
+      --color-text: var(--color-slate-900);
+      --color-text-secondary: var(--color-slate-500);
+      --color-primary: var(--color-green-500);
+      --color-primary-hover: var(--color-green-600);
+      --color-primary-active: var(--color-green-700);
+      --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+      --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+      --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+      --color-card-bg: var(--color-white);
+      --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+      
+      /* Typography */
+      --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-size-base: 16px;
+      --font-size-lg: 18px;
+      --font-size-xl: 20px;
+      --font-size-2xl: 24px;
+      --font-size-3xl: 32px;
+      --font-size-4xl: 40px;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 550;
+      --font-weight-bold: 700;
+      --line-height-tight: 1.2;
+      --line-height-normal: 1.6;
+      
+      /* Spacing */
+      --space-8: 8px;
+      --space-12: 12px;
+      --space-16: 16px;
+      --space-20: 20px;
+      --space-24: 24px;
+      --space-32: 32px;
+      --space-40: 40px;
+      --space-48: 48px;
+      --space-64: 64px;
+      --space-80: 80px;
+      
+      /* Border Radius */
+      --radius-sm: 6px;
+      --radius-base: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      
+      /* Shadows */
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+      
+      /* Animation */
+      --duration-fast: 150ms;
+      --duration-normal: 250ms;
+      --duration-slow: 400ms;
+      --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-background: var(--color-charcoal-700);
+        --color-surface: var(--color-charcoal-800);
+        --color-text: var(--color-gray-200);
+        --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+        --color-primary: var(--color-teal-300);
+        --color-primary-hover: var(--color-teal-400);
+        --color-primary-active: var(--color-teal-300);
+        --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+        --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+        --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+        --color-card-bg: var(--color-charcoal-800);
+        --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+      }
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: var(--font-family-base);
+      font-size: var(--font-size-base);
+      line-height: var(--line-height-normal);
+      color: var(--color-text);
+      background-color: var(--color-background);
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: var(--color-white);
+      padding: var(--space-80) var(--space-24);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -5%;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-20px) rotate(5deg);
+      }
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    header h1 {
+      font-size: var(--font-size-4xl);
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--space-16);
+      letter-spacing: -0.02em;
+    }
+    
+    header p {
+      font-size: var(--font-size-xl);
+      margin-bottom: var(--space-32);
+      opacity: 0.95;
+      font-weight: var(--font-weight-normal);
+    }
+    
+    .btn-primary {
+      display: inline-block;
+      padding: var(--space-16) var(--space-40);
+      background: var(--color-white);
+      color: #4CAF50;
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-base);
+      text-decoration: none;
+      border-radius: var(--radius-md);
+      transition: all var(--duration-normal) var(--ease-standard);
+      box-shadow: var(--shadow-md);
+      margin: var(--space-8);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    
+    /* Section Styles */
+    section {
+      padding: var(--space-80) var(--space-24);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    section h2 {
+      text-align: center;
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--space-48);
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+    }
+    
+    /* Features Section */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-32);
+    }
+    
+    .feature-box {
+      background: var(--color-card-bg);
+      padding: var(--space-40);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      transition: all var(--duration-normal) var(--ease-standard);
+      border: 1px solid var(--color-card-border);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .feature-box:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(76, 175, 80, 0.3);
+    }
+    
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto var(--space-24);
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+    
+    .feature-box h3 {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--space-16);
+      color: var(--color-text);
+    }
+    
+    .feature-box p {
+      font-size: var(--font-size-base);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+    }
+    
+    /* Video Section */
+    .video-section {
+      background: var(--color-secondary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-48);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      background: var(--color-text);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .video-description {
+      margin-top: var(--space-32);
+      text-align: center;
+      font-size: var(--font-size-lg);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+    }
+    
+    /* CTA Section */
+    .cta {
+      text-align: center;
+      padding: var(--space-80) var(--space-24);
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(69, 160, 73, 0.08) 100%);
+      border-radius: var(--radius-xl);
+      margin: var(--space-64) auto;
+      max-width: 1200px;
+    }
+    
+    .cta h2 {
+      font-size: var(--font-size-3xl);
+      margin-bottom: var(--space-16);
+    }
+    
+    .cta p {
+      font-size: var(--font-size-xl);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-40);
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: var(--space-16);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--color-text);
+      color: var(--color-white);
+      padding: var(--space-48) var(--space-24);
+      text-align: center;
+    }
+    
+    footer p {
+      margin-bottom: var(--space-12);
+      opacity: 0.9;
+    }
+    
+    footer a {
+      color: #4CAF50;
+      text-decoration: none;
+      transition: opacity var(--duration-fast) var(--ease-standard);
+      font-weight: var(--font-weight-medium);
+    }
+    
+    footer a:hover {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: var(--font-size-3xl);
+      }
+      
+      header p {
+        font-size: var(--font-size-lg);
+      }
+      
+      section {
+        padding: var(--space-48) var(--space-20);
+      }
+      
+      section h2 {
+        font-size: var(--font-size-2xl);
+        margin-bottom: var(--space-32);
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+        gap: var(--space-24);
+      }
+      
+      .video-section {
+        padding: var(--space-24);
+      }
+      
+      .btn-primary {
+        width: 100%;
+        max-width: 300px;
+      }
+      
+      .cta {
+        padding: var(--space-48) var(--space-20);
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      header {
+        padding: var(--space-48) var(--space-16);
+      }
+      
+      header h1 {
+        font-size: var(--font-size-2xl);
+      }
+      
+      .feature-icon {
+        width: 64px;
+        height: 64px;
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <h1>SmartAcad</h1>
+      <p>Real-time access to your academic records, fees, and clearance certificates</p>
+      <a href="#download" class="btn-primary">Download Now</a>
+    </div>
+  </header>
+
+  <section>
+    <h2>Why Choose SmartAcad?</h2>
+    <div class="features">
+      <div class="feature-box">
+        <div class="feature-icon">📊</div>
+        <h3>Instant Grades</h3>
+        <p>Check your semester grades anytime with real-time updates. Stay informed about your academic progress instantly.</p>
+      </div>
+      <div class="feature-box">
+        <div class="feature-icon">💰</div>
+        <h3>Fee Status</h3>
+        <p>View your tuition, hostel, and other fees at a glance. Track payments and due dates effortlessly.</p>
+      </div>
+      <div class="feature-box">
+        <div class="feature-icon">📜</div>
+        <h3>Clearance Certificates</h3>
+        <p>Download and share clearance certificates easily and instantly. Get your documents whenever you need them.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>How It Works</h2>
+    <div class="video-section">
+      <div class="video-container">
+        <video controls poster="">
+          <source src="smartacadpromotion.mp4" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+      <p class="video-description">Open the app, login with your student ID, and access all your academic information in one place. Simple, fast, and reliable.</p>
+    </div>
+  </section>
+
+  <section class="cta" id="download">
+    <h2>Get Started Today</h2>
+    <p>Download SmartAcad and take control of your academic journey!</p>
+    <div class="cta-buttons">
+      <a href="#" class="btn-primary">📱 Download for Android</a>
+      <a href="#" class="btn-primary">🍎 Download for iOS</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 SmartAcad. All rights reserved.</p>
+    <p>
+      Contact: <a href="mailto:info@smartacad.com">info@smartacad.com</a> | Follow us on 
+      <a href="#">Instagram</a>, 
+      <a href="#">Facebook</a>, 
+      <a href="#">Twitter</a>
+    </p>
+  </footer>
+
+</body>
+</html>
